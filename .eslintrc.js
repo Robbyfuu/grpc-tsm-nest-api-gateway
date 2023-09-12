@@ -27,8 +27,8 @@ module.exports = {
       {
         singleQuote: true,
         trailingComma: 'all',
-        arrowParens: 'always',
-        tabWidth: 2,
+        // arrowParens: 'always',
+        // tabWidth: 2,
         // printWidth: 130,
       },
     ],

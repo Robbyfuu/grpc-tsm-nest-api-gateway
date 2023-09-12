@@ -27,8 +27,8 @@ import {
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {
+  private svc: AuthServiceClient;
   constructor(
-    private svc: AuthServiceClient,
     @Inject(AUTH_SERVICE_NAME)
     private readonly cliente: ClientGrpc,
   ) {}
@@ -47,6 +47,7 @@ export class AuthController implements OnModuleInit {
   private async login(
     @Body() body: LoginRequest,
   ): Promise<Observable<LoginResponse>> {
+    console.log(body)
     return this.svc.login(body);
   }
 

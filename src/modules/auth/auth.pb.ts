@@ -1,9 +1,9 @@
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { util, configure } from 'protobufjs/minimal';
-import Long from 'long';
-import { Observable } from 'rxjs';
+/* eslint-disable */
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
+import { Timestamp } from "./google/protobuf/timestamp.pb";
 
-export const protobufPackage = 'auth';
+export const protobufPackage = "auth";
 
 export interface User {
   id: number;
@@ -12,8 +12,22 @@ export interface User {
   estado: boolean;
   password: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  ok: boolean;
+  status: number;
+  usuario?: User | undefined;
+  token?: string | undefined;
+  refreshToken?: string | undefined;
+  error: string[];
 }
 
 export interface RegisterRequest {
@@ -24,39 +38,12 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  usuario?: User | undefined;
-  error?: string;
   ok: boolean;
   status: number;
-  token?: string;
-  refreshToken?: string;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
   usuario?: User | undefined;
-  error?: string;
-  ok: boolean;
-  status: number;
-  token?: string;
-  refreshToken?: string;
-}
-
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-export interface RefreshTokenResponse {
-  usuario?: User | undefined;
-  error?: string;
-  ok: boolean;
-  status: number;
-  token?: string;
-  refreshToken?: string;
+  token?: string | undefined;
+  refreshToken?: string | undefined;
+  error: string[];
 }
 
 export interface ForgotPasswordRequest {
@@ -64,102 +51,85 @@ export interface ForgotPasswordRequest {
 }
 
 export interface ForgotPasswordResponse {
-  usuario?: User | undefined;
-  error?: string;
   ok: boolean;
   status: number;
+  msg: string;
+  usuario: User | undefined;
 }
 
 export interface ResetPasswordRequest {
-  password: string;
   token: string;
+  password: string;
 }
 
 export interface ResetPasswordResponse {
-  usuario?: User | undefined;
-  error?: string;
   ok: boolean;
   status: number;
+  msg: string;
+  usuario: User | undefined;
 }
 
-export const AUTH_PACKAGE_NAME = 'auth';
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponse {
+  ok: boolean;
+  status: number;
+  usuario: User | undefined;
+  token: string;
+  refreshToken: string;
+}
+
+export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
-  register(request: RegisterRequest): Observable<RegisterResponse>;
   login(request: LoginRequest): Observable<LoginResponse>;
+
+  register(request: RegisterRequest): Observable<RegisterResponse>;
+
+  /** rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {} */
+
+  forgotPassword(request: ForgotPasswordRequest): Observable<ForgotPasswordResponse>;
+
+  resetPassword(request: ResetPasswordRequest): Observable<ResetPasswordResponse>;
+
   refreshToken(request: RefreshTokenRequest): Observable<RefreshTokenResponse>;
-  forgotPassword(
-    request: ForgotPasswordRequest,
-  ): Observable<ForgotPasswordResponse>;
-  resetPassword(
-    request: ResetPasswordRequest,
-  ): Observable<ResetPasswordResponse>;
 }
 
 export interface AuthServiceController {
-  register(
-    request: RegisterRequest,
-  ):
-    | Promise<RegisterResponse>
-    | Observable<RegisterResponse>
-    | RegisterResponse;
-  login(
-    request: LoginRequest,
-  ): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
-  refreshToken(
-    request: RefreshTokenRequest,
-  ):
-    | Promise<RefreshTokenResponse>
-    | Observable<RefreshTokenResponse>
-    | RefreshTokenResponse;
+  login(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+
+  register(request: RegisterRequest): Promise<RegisterResponse> | Observable<RegisterResponse> | RegisterResponse;
+
+  /** rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {} */
+
   forgotPassword(
     request: ForgotPasswordRequest,
-  ):
-    | Promise<ForgotPasswordResponse>
-    | Observable<ForgotPasswordResponse>
-    | ForgotPasswordResponse;
+  ): Promise<ForgotPasswordResponse> | Observable<ForgotPasswordResponse> | ForgotPasswordResponse;
+
   resetPassword(
     request: ResetPasswordRequest,
-  ):
-    | Promise<ResetPasswordResponse>
-    | Observable<ResetPasswordResponse>
-    | ResetPasswordResponse;
+  ): Promise<ResetPasswordResponse> | Observable<ResetPasswordResponse> | ResetPasswordResponse;
+
+  refreshToken(
+    request: RefreshTokenRequest,
+  ): Promise<RefreshTokenResponse> | Observable<RefreshTokenResponse> | RefreshTokenResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['register', 'login', 'validate'];
+    const grpcMethods: string[] = ["login", "register", "forgotPassword", "resetPassword", "refreshToken"];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('AuthService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('AuthService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const AUTH_SERVICE_NAME = 'AuthService';
-
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
-}
+export const AUTH_SERVICE_NAME = "AuthService";

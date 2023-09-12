@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "pnpm prebuild && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -18,7 +18,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "proto:install": "pnpm add -D install git+https://github.com/Robbyfuu/grpc-tsm-nestjs-proto.git",
+    "proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-tsm-nestjs-proto/proto --ts_proto_out=src/modules/auth/ node_modules/grpc-tsm-nestjs-proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.9.2",
@@ -27,8 +29,10 @@
     "@nestjs/core": "^10.2.5",
     "@nestjs/mapped-types": "^2.0.2",
     "@nestjs/microservices": "^10.2.5",
+    "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.5",
     "long": "^5.2.3",
+    "protobufjs": "^7.2.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
     "rxjs": "^7.8.1"
@@ -46,6 +50,8 @@
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "grpc-tsm-nestjs-proto": "github:Robbyfuu/grpc-tsm-nestjs-proto",
+    "install": "^0.13.0",
     "jest": "^29.6.4",
     "prettier": "^2.8.8",
     "source-map-support": "^0.5.21",
@@ -53,6 +59,7 @@
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
+    "ts-proto": "^1.157.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   },

@@ -5,10 +5,10 @@ import { AuthServiceClient, AUTH_SERVICE_NAME } from './auth.pb';
 
 @Injectable()
 export class AuthService {
+  private svc: AuthServiceClient;
   constructor(
-    private readonly client: ClientGrpc,
     @Inject(AUTH_SERVICE_NAME)
-    private svc: AuthServiceClient,
+    private readonly client: ClientGrpc,
   ) {}
 
   public onModuleInit(): void {
