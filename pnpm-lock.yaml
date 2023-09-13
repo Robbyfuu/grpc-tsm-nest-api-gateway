@@ -84,7 +84,7 @@ devDependencies:
     version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.49.0)(prettier@2.8.8)
   grpc-tsm-nestjs-proto:
     specifier: github:Robbyfuu/grpc-tsm-nestjs-proto
-    version: github.com/Robbyfuu/grpc-tsm-nestjs-proto/29fb3dd54c6b64edf302e21ac684d2d7fab9312a
+    version: github.com/Robbyfuu/grpc-tsm-nestjs-proto/e67f9c563b7bfe668753c03b5881f30a07619c5e
   install:
     specifier: ^0.13.0
     version: 0.13.0
@@ -5355,8 +5355,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/Robbyfuu/grpc-tsm-nestjs-proto/29fb3dd54c6b64edf302e21ac684d2d7fab9312a:
-    resolution: {tarball: https://codeload.github.com/Robbyfuu/grpc-tsm-nestjs-proto/tar.gz/29fb3dd54c6b64edf302e21ac684d2d7fab9312a}
+  github.com/Robbyfuu/grpc-tsm-nestjs-proto/e67f9c563b7bfe668753c03b5881f30a07619c5e:
+    resolution: {tarball: https://codeload.github.com/Robbyfuu/grpc-tsm-nestjs-proto/tar.gz/e67f9c563b7bfe668753c03b5881f30a07619c5e}
     name: grpc-tsm-nestjs-proto
     version: 1.0.0
     dev: true
