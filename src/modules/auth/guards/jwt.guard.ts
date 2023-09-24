@@ -8,19 +8,19 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from '../auth.service';
-import { ValidateTokenResponse } from '../auth.pb';
+import { User, ValidateTokenResponse } from '../auth.pb';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
-      user?: any;
+      user?: User;
     }
   }
 }
 @Injectable()
 export class JwtGuard implements CanActivate {
-  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
+  constructor(@Inject(AuthService) private readonly authService: AuthService) { }
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
@@ -36,10 +36,10 @@ export class JwtGuard implements CanActivate {
 
     const jwtoken: string = bearer[1];
 
-    const { status, userId }: ValidateTokenResponse =
+    const { status, user }: ValidateTokenResponse =
       await this.authService.validateToken(jwtoken);
 
-    request.user = userId;
+    request.user = user;
 
     if (status !== HttpStatus.OK) {
       throw new UnauthorizedException();
