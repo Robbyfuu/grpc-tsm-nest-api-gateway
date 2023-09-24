@@ -15,7 +15,7 @@ import { TrabajadorController } from './trabajador.controller';
         name: TRABAJADOR_SERVICE_NAME,
         transport: Transport.GRPC,
         options: {
-          url: '0.0.0.0:50052',
+          url: `${process.env.GRPC_SERVER_HOST_TRABAJADOR}:50052`,
           package: TRABAJADOR_PACKAGE_NAME,
           protoPath:
             'node_modules/grpc-tsm-nestjs-proto/proto/trabajadores.proto',
